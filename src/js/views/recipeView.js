@@ -5,6 +5,8 @@ import { Fraction } from 'fractional';
 class RecipeView {
     _parentElement = document.querySelector('.recipe');
     _data;
+    _errorMessage = 'We could not find that recipe. Please try another one!';
+    _message = '';
     render(data) {
         this._data = data;
         const markup = this._generateMarkup();
@@ -16,7 +18,7 @@ class RecipeView {
         this._parentElement.innerHTML = '';
     }
 
-    renderSpinner = function() {
+    renderSpinner() {
         const markup = `
     <div class="spinner">
       <svg>
@@ -24,9 +26,39 @@ class RecipeView {
       </svg>
     </div>
     `;
-        this._parentElement.innerHTML = '';
+        this._clear();
         this._parentElement.insertAdjacentHTML('afterbegin', markup);
-    };
+    }
+
+    addHandlerRender(handler) {
+        ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
+    }
+
+    renderError(message = this._errorMessage) {
+        const markup = `<div class="error">
+      <div>
+        <svg>
+          <use href="${icons}#icon-alert-triangle"></use>
+        </svg>
+      </div>
+      <p>${message}</p>
+    </div>`;
+        this._clear();
+        this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    }
+
+    renderMessage(message = this._message) {
+        const markup = `<div class="error">
+      <div>
+        <svg>
+          <use href="${icons}#icon-smile"></use>
+        </svg>
+      </div>
+      <p>${message}</p>
+    </div>`;
+        this._clear();
+        this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    }
 
     _generateMarkup() {
         return `<figure class="recipe__fig">
